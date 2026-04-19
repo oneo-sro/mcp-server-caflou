@@ -8,6 +8,9 @@ Model Context Protocol server for Caflou CRM integration.
 - **Contacts**: List, search, and get contact information
 - **Companies**: List, search, and get company details
 - **Deals**: List, search, and get deal information
+- **Invoices**: List, search, and get invoice details (1452+ invoices)
+- **Projects**: List, search, and get project information
+- **Time Entries**: List, search, and get time tracking records (5179+ entries)
 
 ## Installation
 
@@ -84,6 +87,38 @@ List deals with optional search and pagination.
 ### caflou_get_deal
 Get specific deal details by ID.
 
+### caflou_list_invoices
+List invoices with optional filtering:
+- `search` - Search term
+- `kind` - Invoice kind (invoice, proforma, offer, tax_receipt, etc.)
+- `paid` - Filter by paid status (boolean)
+- `per` - Results per page (default: 50)
+- `page` - Page number (default: 1)
+
+### caflou_get_invoice
+Get specific invoice details by ID.
+
+### caflou_list_projects
+List projects with optional filtering:
+- `search` - Search term
+- `finished` - Filter by finished status (boolean)
+- `per` - Results per page (default: 50)
+- `page` - Page number (default: 1)
+
+### caflou_get_project
+Get specific project details by ID.
+
+### caflou_list_time_entries
+List time entries (time tracking) with optional filtering:
+- `search` - Search term
+- `projectId` - Filter by project ID
+- `userId` - Filter by user ID
+- `per` - Results per page (default: 50)
+- `page` - Page number (default: 1)
+
+### caflou_get_time_entry
+Get specific time entry details by ID.
+
 ## Example Usage in Agent
 
 Agent can now use these tools:
@@ -97,6 +132,15 @@ Tool: caflou_list_contacts(search="Jan Novak")
 
 Agent: "Get details of company ID 469940"
 Tool: caflou_get_company(companyId="469940")
+
+Agent: "Show me unpaid invoices"
+Tool: caflou_list_invoices(paid=false, per=20)
+
+Agent: "Find project about Čížkovice"
+Tool: caflou_list_projects(search="Čížkovice")
+
+Agent: "Show Lukáš's time entries this month"
+Tool: caflou_list_time_entries(userId="36760", per=50)
 ```
 
 ## Development

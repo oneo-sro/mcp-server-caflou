@@ -214,6 +214,137 @@ const TOOLS: Tool[] = [
       required: ["dealId"],
     },
   },
+  {
+    name: "caflou_list_invoices",
+    description: "List invoices from Caflou CRM. Supports filtering by kind, payment status, and pagination.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: {
+          type: "string",
+          description: "Search term to filter invoices",
+        },
+        kind: {
+          type: "string",
+          description: "Invoice kind (invoice, proforma, offer, tax_receipt, etc.)",
+        },
+        paid: {
+          type: "boolean",
+          description: "Filter by paid status",
+        },
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_invoice",
+    description: "Get details of a specific invoice by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        invoiceId: {
+          type: "string",
+          description: "Invoice ID",
+        },
+      },
+      required: ["invoiceId"],
+    },
+  },
+  {
+    name: "caflou_list_projects",
+    description: "List projects from Caflou CRM. Supports filtering and pagination.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: {
+          type: "string",
+          description: "Search term to filter projects",
+        },
+        finished: {
+          type: "boolean",
+          description: "Filter by finished status",
+        },
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_project",
+    description: "Get details of a specific project by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        projectId: {
+          type: "string",
+          description: "Project ID",
+        },
+      },
+      required: ["projectId"],
+    },
+  },
+  {
+    name: "caflou_list_time_entries",
+    description: "List time entries from Caflou CRM. Time tracking records for projects and tasks.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: {
+          type: "string",
+          description: "Search term to filter time entries",
+        },
+        projectId: {
+          type: "string",
+          description: "Filter by project ID",
+        },
+        userId: {
+          type: "string",
+          description: "Filter by user ID",
+        },
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_time_entry",
+    description: "Get details of a specific time entry by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        timeEntryId: {
+          type: "string",
+          description: "Time entry ID",
+        },
+      },
+      required: ["timeEntryId"],
+    },
+  },
 ];
 
 // Main server implementation
@@ -353,6 +484,98 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case "caflou_get_deal": {
         const data = await caflourRequest(config, `/deals/${args.dealId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_invoices": {
+        const params = new URLSearchParams();
+        if (args.search) params.append("filter[search]", args.search as string);
+        if (args.kind) params.append("filter[kind]", args.kind as string);
+        if (args.paid !== undefined) params.append("filter[paid]", String(args.paid));
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/invoices?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_invoice": {
+        const data = await caflourRequest(config, `/invoices/${args.invoiceId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_projects": {
+        const params = new URLSearchParams();
+        if (args.search) params.append("filter[search]", args.search as string);
+        if (args.finished !== undefined) params.append("filter[finished]", String(args.finished));
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/projects?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_project": {
+        const data = await caflourRequest(config, `/projects/${args.projectId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_time_entries": {
+        const params = new URLSearchParams();
+        if (args.search) params.append("filter[search]", args.search as string);
+        if (args.projectId) params.append("filter[project_id]", args.projectId as string);
+        if (args.userId) params.append("filter[user_id]", args.userId as string);
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/time_entries?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_time_entry": {
+        const data = await caflourRequest(config, `/time_entries/${args.timeEntryId}`);
         return {
           content: [
             {
