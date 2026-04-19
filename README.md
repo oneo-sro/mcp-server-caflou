@@ -4,13 +4,20 @@ Model Context Protocol server for Caflou CRM integration.
 
 ## Features
 
+Complete Caflou CRM API coverage with 24 tools:
+
 - **Tasks**: List, search, and get task details
-- **Contacts**: List, search, and get contact information
+- **Contacts**: List, search, and get contact information  
 - **Companies**: List, search, and get company details
 - **Deals**: List, search, and get deal information
 - **Invoices**: List, search, and get invoice details (1452+ invoices)
 - **Projects**: List, search, and get project information
 - **Time Entries**: List, search, and get time tracking records (5179+ entries)
+- **Users**: List and get team member information (19 users)
+- **Milestones**: List and get project milestones (30 milestones)
+- **Products**: List and get product catalog (454 products)
+- **Payments**: List and get bank transactions (3250+ payments)
+- **Bank Accounts**: List and get bank account information (64 accounts)
 
 ## Installation
 
@@ -118,6 +125,44 @@ List time entries (time tracking) with optional filtering:
 
 ### caflou_get_time_entry
 Get specific time entry details by ID.
+
+### caflou_list_users
+List team members (users) with optional search.
+
+### caflou_get_user
+Get specific user details by ID.
+
+### caflou_list_milestones
+List project milestones with optional filtering:
+- `projectId` - Filter by project ID
+- `finished` - Filter by finished status (boolean)
+- `per` - Results per page (default: 50)
+- `page` - Page number (default: 1)
+
+### caflou_get_milestone
+Get specific milestone details by ID.
+
+### caflou_list_products
+List products from catalog with optional filtering:
+- `search` - Search term
+- `companyId` - Filter by supplier company ID
+- `per` - Results per page (default: 50)
+- `page` - Page number (default: 1)
+
+### caflou_get_product
+Get specific product details by ID.
+
+### caflou_list_payments
+List bank payments/transactions with optional search and pagination.
+
+### caflou_get_payment
+Get specific payment details by ID.
+
+### caflou_list_bank_accounts
+List configured bank accounts with pagination.
+
+### caflou_get_bank_account
+Get specific bank account details by ID.
 
 ## Example Usage in Agent
 

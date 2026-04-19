@@ -345,6 +345,185 @@ const TOOLS: Tool[] = [
       required: ["timeEntryId"],
     },
   },
+  {
+    name: "caflou_list_users",
+    description: "List users (team members) from Caflou CRM.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: {
+          type: "string",
+          description: "Search term to filter users",
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_user",
+    description: "Get details of a specific user by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        userId: {
+          type: "string",
+          description: "User ID",
+        },
+      },
+      required: ["userId"],
+    },
+  },
+  {
+    name: "caflou_list_milestones",
+    description: "List project milestones from Caflou CRM.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        projectId: {
+          type: "string",
+          description: "Filter by project ID",
+        },
+        finished: {
+          type: "boolean",
+          description: "Filter by finished status",
+        },
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_milestone",
+    description: "Get details of a specific milestone by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        milestoneId: {
+          type: "string",
+          description: "Milestone ID",
+        },
+      },
+      required: ["milestoneId"],
+    },
+  },
+  {
+    name: "caflou_list_products",
+    description: "List products from product catalog. Supports search and pagination.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: {
+          type: "string",
+          description: "Search term to filter products",
+        },
+        companyId: {
+          type: "string",
+          description: "Filter by supplier company ID",
+        },
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_product",
+    description: "Get details of a specific product by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        productId: {
+          type: "string",
+          description: "Product ID",
+        },
+      },
+      required: ["productId"],
+    },
+  },
+  {
+    name: "caflou_list_payments",
+    description: "List bank payments/transactions from Caflou CRM.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        search: {
+          type: "string",
+          description: "Search term to filter payments",
+        },
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_payment",
+    description: "Get details of a specific payment by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        paymentId: {
+          type: "string",
+          description: "Payment ID",
+        },
+      },
+      required: ["paymentId"],
+    },
+  },
+  {
+    name: "caflou_list_bank_accounts",
+    description: "List bank accounts configured in Caflou CRM.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        per: {
+          type: "number",
+          description: "Number of results per page (default: 50)",
+          default: 50,
+        },
+        page: {
+          type: "number",
+          description: "Page number (default: 1)",
+          default: 1,
+        },
+      },
+    },
+  },
+  {
+    name: "caflou_get_bank_account",
+    description: "Get details of a specific bank account by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bankAccountId: {
+          type: "string",
+          description: "Bank account ID",
+        },
+      },
+      required: ["bankAccountId"],
+    },
+  },
 ];
 
 // Main server implementation
@@ -576,6 +755,150 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case "caflou_get_time_entry": {
         const data = await caflourRequest(config, `/time_entries/${args.timeEntryId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_users": {
+        const params = new URLSearchParams();
+        if (args.search) params.append("filter[search]", args.search as string);
+
+        const data = await caflourRequest(config, `/users?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_user": {
+        const data = await caflourRequest(config, `/users/${args.userId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_milestones": {
+        const params = new URLSearchParams();
+        if (args.projectId) params.append("filter[project_id]", args.projectId as string);
+        if (args.finished !== undefined) params.append("filter[finished]", String(args.finished));
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/milestones?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_milestone": {
+        const data = await caflourRequest(config, `/milestones/${args.milestoneId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_products": {
+        const params = new URLSearchParams();
+        if (args.search) params.append("filter[search]", args.search as string);
+        if (args.companyId) params.append("filter[company_id]", args.companyId as string);
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/products?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_product": {
+        const data = await caflourRequest(config, `/products/${args.productId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_payments": {
+        const params = new URLSearchParams();
+        if (args.search) params.append("filter[search]", args.search as string);
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/payments?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_payment": {
+        const data = await caflourRequest(config, `/payments/${args.paymentId}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_list_bank_accounts": {
+        const params = new URLSearchParams();
+        params.append("per", String(args.per || 50));
+        params.append("page", String(args.page || 1));
+
+        const data = await caflourRequest(config, `/bank_accounts?${params}`);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "caflou_get_bank_account": {
+        const data = await caflourRequest(config, `/bank_accounts/${args.bankAccountId}`);
         return {
           content: [
             {
