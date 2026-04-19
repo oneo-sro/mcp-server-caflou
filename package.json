@@ -1,0 +1,29 @@
+{
+  "name": "mcp-server-caflou",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for Caflou CRM",
+  "type": "module",
+  "bin": {
+    "mcp-server-caflou": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "caflou",
+    "crm"
+  ],
+  "author": "Martin Pelak",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
