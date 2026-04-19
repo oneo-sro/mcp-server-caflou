@@ -1,6 +1,12 @@
 # Caflou MCP Server
 
-Model Context Protocol server for Caflou CRM integration.
+[![npm version](https://img.shields.io/npm/v/mcp-server-caflou.svg)](https://www.npmjs.com/package/mcp-server-caflou)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/oneo-sro/mcp-server-caflou/workflows/Test%20Build/badge.svg)](https://github.com/oneo-sro/mcp-server-caflou/actions)
+
+Model Context Protocol server for [Caflou CRM](https://caflou.com/) - complete API integration with 24 tools covering all resources.
+
+**Part of:** [oneo-sro/nixos-openclaw-config](https://github.com/oneo-sro/nixos-openclaw-config) - NixOS configuration with OpenClaw AI assistant
 
 ## Features
 
