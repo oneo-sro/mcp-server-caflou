@@ -7,9 +7,6 @@ import {
   ListToolsRequestSchema,
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import { readFile } from "fs/promises";
-import { homedir } from "os";
-import { join } from "path";
 
 // Caflou API configuration
 interface CaflouConfig {
@@ -18,12 +15,16 @@ interface CaflouConfig {
   baseUrl: string;
 }
 
-// Load configuration from environment or secrets
+// Load configuration from environment variables
 async function loadConfig(): Promise<CaflouConfig> {
-  const secretsDir = join(homedir(), ".secrets");
+  const accountId = process.env.CAFLOU_ACCOUNT_ID;
+  const apiKey = process.env.CAFLOU_API_KEY;
 
-  const accountId = await readFile(join(secretsDir, "caflou-account-id"), "utf-8").then(s => s.trim());
-  const apiKey = await readFile(join(secretsDir, "caflou-api-key"), "utf-8").then(s => s.trim());
+  if (!accountId || !apiKey) {
+    throw new Error(
+      "Caflou credentials not found. Set CAFLOU_ACCOUNT_ID and CAFLOU_API_KEY environment variables."
+    );
+  }
 
   return {
     accountId,
